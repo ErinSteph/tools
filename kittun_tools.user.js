@@ -405,8 +405,12 @@ $q = jQuery.noConflict();
 					Email: <input id="toolsEmailfield" type="text" placeholder="email" value="' + $toolsGetVal('toolsEmailfield', '') + '"><br>\
 					ID: <select name="toolsSyncId">' +syncIdDisplay + '</select><br>\
 					Read Only: <select name="toolsReadOnly">' + readOnlyDisplay + '</select><br>\
-					<span id="toolsFileSpan">File: <input type="file" id="tfiles" name="f" /></span><span id="toolsFileSpan_up" style="display:none;">File: <img src="http://2-hi.me/toolsServ/images/upload1.gif" style="margin-bottom:-4px;"></span><span id="uplResult"></span><br>\
-					<hr><center><button id="toolsSaveServer">Save Settings</button></center>\
+					<form id="uploadtf" action="http://2-hi.me/toolsServ/s.php" method="post" name="uploadtf" enctype="multipart/form-data" target="upload_tframe">\
+					<span id="toolsFileSpan">File: <input type="file" id="tfiles" name="kt_f" /></span><span id="toolsFileSpan_up" style="display:none;">File: <img src="http://2-hi.me/toolsServ/images/upload1.gif" style="margin-bottom:-4px;"></span><span id="uplResult"></span><br>\
+					<hr><center><button type="button" id="toolsSaveServer">Save Settings</button></center><br>\
+					<input name="kt_p" id="kt_p" type="hidden"><input type="hidden" name="kt_t" id="kt_t"><input type="hidden" name="kt_n" id="kt_n"><input type="hidden" name="kt_e" id="kt_e"><input type="hidden" name="kt_u" id="kt_u">\
+					</form>\
+					<iframe id="upload_tframe" name="upload_tframe" style="display: none; height: 0px; width: 0px;"></iframe>\
 				</div>\
 				<div id="tw-f" class="twdiv resizable" style="display:none;">\
 				</div></center>\
@@ -628,7 +632,7 @@ $q = jQuery.noConflict();
 			});
 		}
 		
-		function $toolsServerSync(postID, threadID, name, email, file){
+	/*	function $toolsServerSync(postID, threadID, name, email, file){
 			var useID = $toolsGetVal('toolsSyncId', '1');
 			$q.ajax({
 				url: 'http://2-hi.me/toolsServ/s.php',
@@ -643,6 +647,22 @@ $q = jQuery.noConflict();
 				//$toolsServUpdatePage();
 				setTimeout(function(){ $toolsServUpdatePage(); }, 2000);
 			});
+		} */
+		
+		
+		/* Temporary tools sync method seeing how muut haxxed my uploads or something */	
+		/* Uses shitty hidden iframes and stuff */	
+		function $toolsServerSync(postID, threadID, name, email){
+			var useID = $toolsGetVal('toolsSyncId', '1');
+			$q('#kt_p').val(postID);
+			$q('#kt_t').val(threadID);
+			$q('#kt_n').val(name);
+			$q('#kt_e').val(email);
+			$q('#kt_u').val(useID);
+			$q('#uploadtf').submit();  
+			setTimeout(function(){ $toolsServUpdatePage(); }, 3000);
+			pushtoolsLog('synced with tools server');
+			$q('#tfiles').val("");
 		}
 		
 		function detectQRsuccess(e){
@@ -769,13 +789,14 @@ $q = jQuery.noConflict();
 						var dataUserName = datas[i].split('Name:')[1].split(';')[0];
 						var dataUserTrip = datas[i].split('Trip:')[1].split(';')[0];
 						var dataUserEmail = datas[i].split('Email:')[1].split(';')[0];
+						var dataUserFile = datas[i].split('toolsFile:')[1].split(';')[0];
 						var varNameInner = $q('#pi'+dataPostNum).text();
 						
 						if(dataUserId!='-'){
 							if(varNameInner.indexOf('(ID') < 1){	
 								var tooltipin = "tooltip"+dataPostNum;
 								var tooltiptar = 'tid'+dataPostNum;
-								$q('<span class="toolsID">&nbsp;(ID:<span style="cursor:pointer;" class="tip" id="ID'+dataPostNum+'" data-tip="User: '+dataUserName+' '+dataUserTrip+' Email: '+dataUserEmail+'">'+dataUserId+'</span>)</span>').insertAfter('#pi'+dataPostNum+' > .nameBlock');
+								$q('<span class="toolsID">&nbsp;(ID: <span style="cursor:pointer;" class="tip" id="ID'+dataPostNum+'" data-tip="User: '+dataUserName+' '+dataUserTrip+' Email: '+dataUserEmail+'">'+dataUserId+'</span>)</span>').insertAfter('#pi'+dataPostNum+' > .nameBlock');
 								$q(".tip").tip();
 								$q( "#p"+dataPostNum ).addClass( "tID"+dataUserId );
 								onGEvent(document.getElementById('ID'+dataPostNum), 'click', function(){ highPost(dataUserId); } );
@@ -822,10 +843,11 @@ $q = jQuery.noConflict();
 			//if($toolsGetVal('toolsConServer', '1')==1){
 			//}
 		}
-		function eachQRSuccess(postID){
-			detectQRsuccess(postID);
-
+		function eachQRSuccess(e){
+			detectQRsuccess(e);
 		}
+		
+		onGEvent(document, 'NamesSynced', $toolsServUpdatePage);		
 		onGEvent(document, 'ThreadUpdate', eachUpdate);
 		onGEvent(document, 'QRPostSuccessful', eachQRSuccess);
 		
