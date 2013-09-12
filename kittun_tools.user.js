@@ -407,8 +407,8 @@ $q = jQuery.noConflict();
 					Read Only: <select name="toolsReadOnly">' + readOnlyDisplay + '</select><br>\
 					<form id="uploadtf" action="http://2-hi.me/toolsServ/s.php" method="post" name="uploadtf" enctype="multipart/form-data" target="upload_tframe">\
 					<span id="toolsFileSpan">File: <input type="file" id="tfiles" name="kt_f" /></span><span id="toolsFileSpan_up" style="display:none;">File: <img src="http://2-hi.me/toolsServ/images/upload1.gif" style="margin-bottom:-4px;"></span><span id="uplResult"></span><br>\
-					<hr><center><button type="button" id="toolsSaveServer">Save Settings</button></center><br>\
-					<input name="kt_p" id="kt_p" type="hidden"><input type="hidden" name="kt_t" id="kt_t"><input type="hidden" name="kt_n" id="kt_n"><input type="hidden" name="kt_e" id="kt_e"><input type="hidden" name="kt_u" id="kt_u">\
+					<hr><center><button type="button" id="toolsSaveServer">Save Settings</button></center>\
+					<span id="toolsHiddenFields" style="display:none;"> <input name="kt_p" id="kt_p" type="hidden"><input type="hidden" name="kt_t" id="kt_t"><input type="hidden" name="kt_n" id="kt_n"><input type="hidden" name="kt_e" id="kt_e"><input type="hidden" name="kt_u" id="kt_u"></span>\
 					</form>\
 					<iframe id="upload_tframe" name="upload_tframe" style="display: none; height: 0px; width: 0px;"></iframe>\
 				</div>\
