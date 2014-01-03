@@ -3,12 +3,12 @@
 // @namespace   kittun
 // @description tools for /b/ circlejerks, revised for the disturbance.
 // @include     *boards.4chan.org/b/*
-// @version     1.0
+// @version     1.0.1
 // @icon		data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAvCAYAAACc5fiSAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9oJHgQGKdFGQAIAAAMQSURBVGje7ZnNceowFIWPGBqwSrBLwCVEJUAJcQlsWdICKQFKsEtIlm9plcAtQW8B15FsCWSQ/cKbaCYzmUGa+XR0dH9kgR1eciyAX/AXBt/BYAczB/gyGTCA8/kMKeWLKL6DMcbAmIvQbfuJOVRfpIBummZ2jy9ngb51AjuIf+Jx0hrr9/ebwGyj/hBCzKx4jNrXOd7NEv2QqGLBFEU5UJg3SFrjbb2+ztczg1tq920ipXSg7RMh7YIWRfmwv5MpTkQOdAg4ldpPgbPaIWgfMEM/q3YSxUPQNqytcgpoABDRZa2V1rMsu3tJg6k/AXS84juYe8A8siwDEeF8Pk+idHzKHwFtw/P8LMsnqWEWKaGFEE42nBJ+mVJptsfLNRK2RaZWfZFK7R/TukkpIYSILojY32PWTAJujMExW0FK+Q1C9P3XgzbGoM1W2CJ313hGXddP22URSjQnWeJrhHJalvggwhdoFqsEo8qXD+KG5+eEHoJfL6WdsvmSCiHQtp8oihJt+4k8Xzlh0E7x9sWeyu/LUFjjDTBAXdcoihLHw8GB7s+313gtpdNsxCmy1n/eugtzPNaDyaePj3B/2Rubjer+PxyOXc3C4Eqpp4ovR/HTqbkcc2By0zTR4NvtHnmee39TSl0SkZWYpJRmzAb6HhdVtTEhxVdvq1FqHw5Hp0Ls24Sh2WrXJsPEwA+s0qn+YNa0L2NVbQAA+/2+A1dKoa5r5Hk2aKyJKLpD8jcSD6Z8XwQJqa2UGrwG8PoY+FCtIjj7xYQz3zwi7YUmrb3Q96LRmLJWSCnNxXs0QnWdJPzVdQ2lVPDCLu80EoJvO0eB6BLAA0xaY1NVwbrdJ9A16Q0u7P2e87qgKErjFEmRg+O1veZyKrljDdvfvgZFSunAxz9PWIu6I4wYfFL9E2D4mIuc8tFT2NGHSHehzmeDvopFUQ421rcYh83QKTz9Pn4ZOZSS3khh+3ZTVYM5Qoib1mNBxnt8RNzm57hbTXN/DleWNjzfi66e8UQV8fAH2im/84xN+a80fj/Q/oL/7+B/AdR1M3Mk2JimAAAAAElFTkSuQmCC
 // @run-at		document-idle
 // ==/UserScript==
 
-var vrn = "1.0"
+var vrn = "1.0.1"
 var version = "1.61";
 
 if(window.location.href.indexOf('/res/') > -1){var $inThread = true;}else{var $inThread = false;}
@@ -921,11 +921,20 @@ $q = jQuery.noConflict();
 		function eachQRSuccess(e){
 			detectQRsuccess(e);
 		}
+		function eventtoolspush(e){
+		pushtoolsLog(e.detail);
+		}
+		onGEvent(document, 'toolspush', eventtoolspush);
 		
 		onGEvent(document, 'NamesSynced', eachNameSync);		
 		onGEvent(document, 'ThreadUpdate', eachUpdate);
-		onGEvent(document, 'QRPostSuccessful', eachQRSuccess);
-			
+		var isChromium = window.chrome;
+		if(isChromium) {
+		   onGEvent(document, 'QRPostSuccessful_', eachQRSuccess);
+		} else { 
+		   onGEvent(document, 'QRPostSuccessful', eachQRSuccess);
+		}
+	
 	}
 	
 var onGEvent = function(el, type, handler) {
